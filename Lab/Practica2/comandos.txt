@@ -1,0 +1,263 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import findspark\n",
+    "findspark.init()\n",
+    "# Creating Spark Context\n",
+    "from pyspark import SparkContext\n",
+    "from pyspark.sql.session import SparkSession\n",
+    "sc = SparkContext(\"local\", \"first app\")\n",
+    "spark = SparkSession(sc)\n",
+    "import plotly.graph_objects as go\n",
+    "from pyspark.sql import SQLContext\n",
+    "sqlContext = SQLContext(sc)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[('Albania', '21'), ('Albania', '16'), ('Albania', '14'), ('Albania', '1'), ('Albania', '9'), ('Albania', '1'), ('Albania', '6'), ('Albania', '4'), ('Albania', '1'), ('Albania', '0')]\n",
+      "21 <class 'str'>\n",
+      "16 <class 'str'>\n",
+      "14 <class 'str'>\n",
+      "1 <class 'str'>\n",
+      "9 <class 'str'>\n",
+      "1 <class 'str'>\n",
+      "6 <class 'str'>\n",
+      "4 <class 'str'>\n",
+      "1 <class 'str'>\n",
+      "0 <class 'str'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "#FORMA DE CARGA 1\n",
+    "text_file = sc.textFile(\"C:\\\\Users\\\\breyn\\\\Desktop\\\\PySparkPruebas\\\\suicide.csv\")\n",
+    "rddcomas = text_file.map(lambda linea: linea.split(\",\"))\n",
+    "#Se tiene que filtrar sin el encabezado\n",
+    "rddfiltro = rddcomas.filter(lambda word : (word[0] != 'country'))\n",
+    "\n",
+    "#Se toma columna 0 y 4 que es el pais y el valor de numero de suicidios \n",
+    "rddPAIS = rddfiltro.map(lambda word: (word[0],word[4]))\n",
+    "print(rddPAIS.take(10))\n",
+    "#Pero vemos este problema que toma str todos los campos\n",
+    "for i in rddPAIS.take(10):\n",
+    "    print(i[1],type(i[1]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n",
+      "<class 'float'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Se convierte de Str a Float\n",
+    "rddPAIS = rddfiltro.map(lambda word: (word[0],float(word[4])))\n",
+    "for i in rddPAIS.take(10):\n",
+    "    print(type(i[1]))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[('Albania', 21),\n",
+       " ('Albania', 16),\n",
+       " ('Albania', 14),\n",
+       " ('Albania', 1),\n",
+       " ('Albania', 9),\n",
+       " ('Albania', 1),\n",
+       " ('Albania', 6),\n",
+       " ('Albania', 4),\n",
+       " ('Albania', 1),\n",
+       " ('Albania', 0)]"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "#FORMA DE CARGA 2\n",
+    "#Leemos el archivo este ya sin encabezado y \"inferschema=true\" nos da los tipos de datos desde su lectura\n",
+    "text_file = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true', quote='\"', delimiter=',').load(\"C:\\\\Users\\\\breyn\\\\Desktop\\\\\\PySparkPruebas\\\\suicide.csv\")\n",
+    "rddfiltro = text_file.rdd.map(tuple)\n",
+    "#Se toma columna 0 y 4 que es el pais y el valor de numero de suicidios \n",
+    "rddPAIS = rddfiltro.map(lambda word: (word[0],word[4]))\n",
+    "rddPAIS.take(10)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#---------------------------REPORTE 1---------------------------"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Conteo total -> [('Albania', 1970), ('Antigua and Barbuda', 11), ('Argentina', 82219), ('Armenia', 1905), ('Aruba', 101), ('Australia', 70111), ('Austria', 50073), ('Azerbaijan', 1656), ('Bahamas', 93), ('Bahrain', 463), ('Barbados', 177), ('Belarus', 59892), ('Belgium', 62761), ('Belize', 348), ('Bosnia and Herzegovina', 318), ('Brazil', 226613), ('Bulgaria', 36388), ('Cabo Verde', 42), ('Canada', 107561), ('Chile', 40895), ('Colombia', 53080), ('Costa Rica', 6792), ('Croatia', 18429), ('Cuba', 41418), ('Cyprus', 412), ('Czech Republic', 43687), ('Denmark', 15297), ('Dominica', 0), ('Ecuador', 20660), ('El Salvador', 11683), ('Estonia', 7034), ('Fiji', 304), ('Finland', 33677), ('France', 329127), ('Georgia', 3224), ('Germany', 291262), ('Greece', 12368), ('Grenada', 38), ('Guatemala', 8149), ('Guyana', 3426), ('Hungary', 73891), ('Iceland', 1108), ('Ireland', 12574), ('Israel', 11294), ('Italy', 132060), ('Jamaica', 184), ('Japan', 806902), ('Kazakhstan', 101546), ('Kiribati', 53), ('Kuwait', 966), ('Kyrgyzstan', 13090), ('Latvia', 12770), ('Lithuania', 28039), ('Luxembourg', 1958), ('Macau', 27), ('Maldives', 20), ('Malta', 585), ('Mauritius', 3894), ('Mexico', 111139), ('Mongolia', 423), ('Montenegro', 472), ('Netherlands', 50833), ('New Zealand', 14383), ('Nicaragua', 2013), ('Norway', 16992), ('Oman', 33), ('Panama', 3483), ('Paraguay', 4783), ('Philippines', 21330), ('Poland', 139098), ('Portugal', 24061), ('Puerto Rico', 9043), ('Qatar', 574), ('Republic of Korea', 261730), ('Romania', 72777), ('Russian Federation', 1209742), ('Saint Kitts and Nevis', 0), ('Saint Lucia', 230), ('Saint Vincent and Grenadines', 124), ('San Marino', 4), ('Serbia', 24179), ('Seychelles', 98), ('Singapore', 10089), ('Slovakia', 13437), ('Slovenia', 10615), ('South Africa', 7321), ('Spain', 100202), ('Sri Lanka', 55641), ('Suriname', 2166), ('Sweden', 37795), ('Switzerland', 26217), ('Thailand', 110643), ('Trinidad and Tobago', 4039), ('Turkey', 10131), ('Turkmenistan', 8624), ('Ukraine', 319950), ('United Arab Emirates', 622), ('United Kingdom', 136805), ('United States', 1034013), ('Uruguay', 13138), ('Uzbekistan', 34803)]\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Conteo total por paises\n",
+    "rddCONTEO=rddPAIS.reduceByKey(lambda a,b: a+b)\n",
+    "print(\"Conteo total -> %s\" % rddCONTEO.collect())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "5 paises con mayor numero de suicidios -> [('Russian Federation', 1209742), ('United States', 1034013), ('Japan', 806902), ('France', 329127), ('Ukraine', 319950)]\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Ordenamiento por valor ascendentemente(True en sortBy) y se toman 5\n",
+    "rddORDEN = sc.parallelize(rddCONTEO.sortBy(lambda a: a[1],False).take(5))\n",
+    "print(\"5 paises con mayor numero de suicidios -> %s\" % rddORDEN.collect())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "['Russian Federation', 'United States', 'Japan', 'France', 'Ukraine']\n",
+      "[1209742, 1034013, 806902, 329127, 319950]\n"
+     ]
+    }
+   ],
+   "source": [
+    "#Separando nombres y totales\n",
+    "#Vista de datos\n",
+    "rddNombres = rddORDEN.map(lambda x: (x[0]))\n",
+    "rddTotales = rddORDEN.map(lambda x: (x[1]))\n",
+    "print(rddNombres.collect())\n",
+    "print(rddTotales.collect())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Graficando barras\n",
+    "fig = go.Figure(data=go.Bar(x=rddNombres.collect(),y=rddTotales.collect()))\n",
+    "fig.update_layout(title_text='Paises con el mayor número de suicidios.',title_font_size=30,\n",
+    "                  yaxis=dict(title='No. Suicidios',title_font_size=25),\n",
+    "                  xaxis=dict(title='País',title_font_size=25))\n",
+    "fig.update_traces(overwrite=True, marker={\"opacity\": 0.5})\n",
+    "fig.write_html('Reporte1.html', auto_open=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Graficando pie\n",
+    "fig = go.Figure(data=go.Pie(labels=rddNombres.collect(),values=rddTotales.collect()))\n",
+    "fig.update_layout(title_text='Paises con el mayor número de suicidios.',title_font_size=30)\n",
+    "fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20)\n",
+    "fig.write_html('Reporte2.html', auto_open=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
+
+
+
+HADOOP_HOME
+C:\pyspark\spark-3.0.1-bin-hadoop2.7
+
+SPARK_HOME
+C:\pyspark\spark-3.0.1-bin-hadoop2.7
+
+
+C:\pyspark\spark-3.0.1-bin-hadoop2.7\bin

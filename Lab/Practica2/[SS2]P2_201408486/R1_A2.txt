@@ -1,0 +1,31 @@
+##Archivo 2
+##Reporte 1
+import findspark
+findspark.init()
+from pyspark import SparkContext
+from pyspark.sql.session import SparkSession
+sc = SparkContext("local", "first app")
+spark = SparkSession(sc)
+import plotly.graph_objects as go
+from pyspark.sql import SQLContext
+sqlContext = SQLContext(sc)
+
+text_file = sqlContext.read.format('com.databricks.spark.csv').options(header='true', inferschema='true', quote='"', delimiter=',').load("C:\\Users\\sharolin\\Desktop\\entrada\\TraficoAereoGt.csv")
+rddfiltro = text_file.rdd.map(tuple)
+rddAERO = rddfiltro.map(lambda word: (word[2],word[3]))
+rddAERO.collect()
+
+
+rddCONTEO=rddAERO.reduceByKey(lambda a,b: a+b)
+print("Conteo total -> %s" % rddCONTEO.collect())
+
+
+rddNombres = rddCONTEO.map(lambda x: (x[0]))
+rddTotales = rddCONTEO.map(lambda x: (x[1]))
+print(rddNombres.collect())
+print(rddTotales.collect())
+
+fig = go.Figure(data=go.Bar(x=rddNombres.collect(),y=rddTotales.collect()))
+fig.update_layout(title_text='Aterrizajes por aeropuerto',title_font_size=30, yaxis=dict(title='Valor exportacion',title_font_size=25), xaxis=dict(title='Pais',title_font_size=25))
+fig.update_traces(overwrite=True, marker={"opacity": 0.5})
+fig.write_html('R1_A2.html', auto_open=True)

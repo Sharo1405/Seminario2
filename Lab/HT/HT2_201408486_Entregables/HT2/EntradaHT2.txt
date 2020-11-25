@@ -1,0 +1,55 @@
+Carné|Nombre|PosibleNota
+199811032|Carlos Edgardo Ichel Escobar|94
+200011652|Oscar Humberto Morales Oviedo|85
+200310165|Jose Abraham Navarro de Leon|87
+200611517|Jose Domingo Tubac Chocon|100
+200714855|Aroldo Rene Portillo Lutin|89
+200722339||91
+200750174|Patrik Samuel Sacbaja Chex|99
+200915168|Christian Levi González Rodríguez|97
+200915333|Mynor Israel Miranda Lopez|86
+200924518|Anibal Vinicio Gramajo Ramirez|87
+200924991|Eliezer Isai Coronado Morales|90
+201010425|Andrés Ricardo Ismael Guzmán|--
+201020247|Haroldo Pablo Arias Molina|94
+201021135|Felipe Nery Ruiz Rodriguez|97
+201114301|Victor Vasquez Coronado|96
+|Oscar René Jordán Orellana|94
+201212490|Kelvin Vásquez Gómez|95
+201212623|Kenia Marisol Zepeda López|100
+201212945|Elmer Edgardo Alay Yupe|98
+201213062|Mónica Raquel Calderón Muñoz|92
+201213223|Astrid Edith Hernández González|99
+201213423|Mynor Rolando Masaya Juárez|90
+|Daniel Alberto Juarez Back|98
+201313782|Byron Geovanni Chicoj Pérez|85
+201314079|Brandon Enrique Pedroza Ochoa|88
+201314631|Jorge Mario Recinos Dieguez|100
+201314715|Mario Alejandro Mutz de Leon|90
+201314808|Leslie Fabiola Morales González|91
+201403733|Juan Raúl Mendizábal Rabanales|95
+"201404006"|Oscar Alejandro Rodríguez Calderón|100
+201404082|Fernando Jose Paz Gonzalez|86
+201404262|Jose David Rodriguez Hernandez|97
+201404367|Jose Andres Ruiz Peer|86
+201408486|Sharolin Guadalupe Lacunza González|94
+201408580|Carlos Andree Avalos Soto|99
+201503413|Dennis Alejandro Masaya Nájera|98
+201503422|Susel Eugenia Retana Arriola|91
+201503609|Diego Josue Berríos Gutierrez|--
+201503651|Jose Fernando Valdez Perez|91
+201503748|Javier Orlando Jáuregui Juárez|85
+201503750|Carlos Eduardo Carias Salan|99
+201503797|Andrés Alejandro Montúfar Cordero|91
+201503840|Hugo René Figueroa Castillo|95
+201503869|Juan Pablo Juárez López|94
+201503925|Sergio Geovany Guoz Tubac|94
+201503953||100
+201504143|Carlos Roberto Jimenez Perez|93
+201504284|Wendy Aracely Chamalé Boch|97
+201504399|María de Los Angeles Herrera Sumalé|99
+201602743|Fernando Arturo Pensamiento Calderon|97
+201602811|Oscar Ariel Corleto Soto|91
+201602975|Ruth Nohemy Ardón Lechuga|96
+201612097|Erick Alexander Lemus Morales|94
+201701023|Luis Angel Vargas Leon|89
